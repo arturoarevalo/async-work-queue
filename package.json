@@ -1,0 +1,28 @@
+{
+  "name": "async-work-queue",
+  "version": "0.1.0",
+  "description": "A time & memory efficient asynchronous queue written in CoffeeScript.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "rm -rf lib && mkdir lib && iced -b -c -o lib/ -I node src/index.iced"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arturoarevalo/async-work-queue.git"
+  },
+  "keywords": [
+    "async",
+    "work",
+    "queue"
+  ],
+  "author": "Arturo Arévalo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arturoarevalo/async-work-queue/issues"
+  },
+  "homepage": "https://github.com/arturoarevalo/async-work-queue#readme",
+  "dependencies": {
+    "coffee-script-properties": "^1.0.0"
+  }
+}

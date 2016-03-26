@@ -1,0 +1,8 @@
+.npmignore
+*.coffee
+*.iced
+.DS_Store
+npm-debug.log
+script/
+src/
+samples/
