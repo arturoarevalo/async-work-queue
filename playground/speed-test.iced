@@ -1,5 +1,5 @@
 AsyncWorkQueue = require "../src/index"
-async = require "../../pulstar/node_modules/async"
+async = require "async"
 
 ITEMS = 1000
 REPETITIONS = 10000
