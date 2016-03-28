@@ -28,20 +28,37 @@ class AsyncWorkQueue extends EventEmitter
     @getter "working", -> (item for item in @indices when item isnt null)
 
     push: (task, callback) ->
-        tasklet = 
-            task: task
-            callback: callback
-            next: null
+        if Array.isArray task
+            @push item, callback for item in task
+        else
+            tasklet = 
+                task: task
+                callback: callback
+                next: null
 
-        if @queue.tail
-            @queue.tail.next = tasklet
-            @queue.tail = tasklet
+            if @queue.tail
+                @queue.tail.next = tasklet
+                @queue.tail = tasklet
 
-        if not @queue.head
-            @queue.head = @queue.tail = tasklet
+            if not @queue.head
+                @queue.head = @queue.tail = tasklet
 
-        @queue.length++
-        @scheduleEventLoop()
+            @queue.length++
+            @scheduleEventLoop()
+
+    unshift: (task, callback) ->
+        if Array.isArray task
+            @unshift item, callback for item in task
+        else
+            tasklet =
+                task: task
+                callback: callback
+                next: @queue.head
+
+            @queue.head = tasklet
+            @queue.length++
+
+            @scheduleEventLoop()
 
     extractTasklet: ->
         item = @queue.head
@@ -69,7 +86,7 @@ class AsyncWorkQueue extends EventEmitter
         try
             @worker tasklet.task, (error, data) =>
                 try
-                    tasklet?.callback error, data
+                    tasklet.callback? error, data
                 catch cbex
                     console.error cbex
 
@@ -78,7 +95,7 @@ class AsyncWorkQueue extends EventEmitter
                 @scheduleEventLoop()
         catch ex
             try
-                tasklet?.callback error, data
+                tasklet.callback? error, data
             catch cbex
                 console.error cbex
 

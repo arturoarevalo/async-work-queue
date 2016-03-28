@@ -15,14 +15,14 @@ Creates a queue object with a given concurrency level. Tasks can be added to the
 Internally `AsyncWorkQueue` uses linked lists instead of arrays to manage the list of tasks.
 
 ## Usage
-You can create instances of the AsyncWorkQueue class and override the *processTask* method or directly pass the worker function as a parameter to the constructor.
+You can create instances of the `AsyncWorkQueue` class and override the `processTask` method or directly pass the `worker` function as a parameter to the constructor.
 
 In CoffeeScript:
 ```coffeescript
 AsyncWorkQueue = require "async-work-queue"
 
 # using class inheritance
-class MyQueue
+class MyQueue extends AsyncWorkQueue
     processTask: (task, callback) ->
         # do something here with the task
         callback error, result
@@ -45,7 +45,7 @@ queue.push "task3", (error, result) -> console.log result
 
 In Javascript:
 ```javascript
-var AsyncWorkQueue = require "async-work-queue"
+var AsyncWorkQueue = require("async-work-queue");
 
 var worker = function (task, callback) {
     // do something here with the task
@@ -59,7 +59,7 @@ queue.push("task3", function (error, result) { console.log (result) });
 ```
 
 ## Concurrency
-The concurrency limit can be passed to the class constructor as a parameter. By default its value is *1*.
+The concurrency limit can be passed to the class constructor as a parameter. By default its value is `1`.
 
 ```coffeescript
 # using class inheritance
@@ -79,13 +79,14 @@ queue = new AsyncWorkQueue worker, 5
 ```
 
 ## Methods and properties
-The AsyncWorkQueue class has the following properties and methods:
+The `AsyncWorkQueue` class has the following properties and methods:
 
 * `length` - a read-only property with the number of tasks waiting in the queue.
 * `waiting` - an alias for `length`.
 * `running` - a read-only property with the number of tasks being run at the moment.
 * `working` - a read-only property with the tasks (as an array) being run at the moment (`running === working.length`).
-* `push(task, [callback])` - add a new task to the end of the queue. `callback` will be called once a worker has finished processing the task.
+* `push(task, [callback])` - add a new task, or an array of tasks, to the end of the queue. `callback` will be called once a worker has finished processing the task. `task` can be either a single object or an array of objects. If an array is passed, all tasks will fire the same `callback` when finished.
+* `unshift(task, [callback]` - same as `push`, but tasks will be added to the beginnig of the queue instead of the end.
 
 ## Error handling
-Any exception fired in the `worker` function will be passed as the `error` parameter to the Task `callback`.
+Any exception fired in the `worker` function will be passed as the `error` parameter to the task `callback`.
