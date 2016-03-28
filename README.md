@@ -94,7 +94,7 @@ The `AsyncWorkQueue` class has the following properties and methods:
 * `running` - a read-only property with the number of tasks being run at the moment.
 * `working` - a read-only property with the tasks (as an array) being run at the moment (`running === working.length`).
 * `push(task, [callback])` - add a new task, or an array of tasks, to the end of the queue. `callback` will be called once a worker has finished processing the task. `task` can be either a single object or an array of objects. If an array is passed, all tasks will fire the same `callback` when finished.
-* `unshift(task, [callback]` - same as `push`, but tasks will be added to the beginnig of the queue instead of the end.
+* `unshift(task, [callback]` - same as `push`, but tasks will be added to the beginning of the queue instead of the end.
 
 ## Error handling
 Any exception fired in the `worker` function will be passed as the `error` parameter to the task `callback`.
