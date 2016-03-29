@@ -10,6 +10,9 @@ class AsyncWorkQueue extends EventEmitter
 
         @worker = worker or @processTask
 
+        if @concurrency <= 0
+            throw new Error "Invalid initialization parameters"
+
         @queue =
             head: null
             tail: null
@@ -19,7 +22,7 @@ class AsyncWorkQueue extends EventEmitter
         @slots = []
 
         for i in [0 .. @concurrency - 1]
-            @indices[i] = -1
+            @indices[i] = null
             @slots.push i
 
     @getter "waiting", -> @queue.length
@@ -71,7 +74,7 @@ class AsyncWorkQueue extends EventEmitter
         @queue.length--
         return item
 
-    scheduleEventLoop: =>
+    scheduleEventLoop: ->
         if not @eventLoopScheduled
             @eventLoopScheduled = true
             process.nextTick @eventLoop
@@ -88,23 +91,24 @@ class AsyncWorkQueue extends EventEmitter
                 try
                     tasklet.callback? error, data
                 catch cbex
-                    console.error cbex
+                    @emit "callback exception", tasklet.task, cbex
 
                 @indices[slot] = null
                 @slots.push slot
                 @scheduleEventLoop()
         catch ex
+            @emit "error", tasklet.task, ex
             try
-                tasklet.callback? error, data
+                tasklet.callback? ex
             catch cbex
-                console.error cbex
+                @emit "callback exception", tasklet.task, cbex
 
             @indices[slot] = null
             @slots.push slot
             @scheduleEventLoop()
 
     processTask: (task, callback) ->
-        callback?()
+        callback? null
 
 
 module.exports = AsyncWorkQueue
