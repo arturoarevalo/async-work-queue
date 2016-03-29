@@ -4,7 +4,7 @@
   "description": "A time & memory efficient asynchronous queue written in CoffeeScript.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --require test/fix_tests.js --compilers coffee:coffee-script ./test/*.iced",
     "prepublish": "rm -rf lib && mkdir lib && iced -b -c -o lib/ -I node src/index.iced"
   },
   "repository": {
@@ -24,5 +24,8 @@
   "homepage": "https://github.com/arturoarevalo/async-work-queue#readme",
   "dependencies": {
     "coffee-script-properties": "^1.0.0"
+  },
+  "devDependencies": {
+    "iced-coffee-script": "^108.0.9"
   }
 }

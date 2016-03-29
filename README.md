@@ -97,4 +97,22 @@ The `AsyncWorkQueue` class has the following properties and methods:
 * `unshift(task, [callback]` - same as `push`, but tasks will be added to the beginning of the queue instead of the end.
 
 ## Error handling
-Any exception fired in the `worker` function will be passed as the `error` parameter to the task `callback`.
+Any exception fired in the `worker` function will be passed as the `error` parameter to the task `callback`. Also, an `error` event will be generated with the task and the catched exception.
+
+If the `callback` function throws any exception it will be catched and emitted as an `callback exception` event.
+
+Example:
+```coffeescript
+worker = (task, callback) ->
+    # this will call the callback function with an error
+    # and emit an "error" event in the queue
+    undefined_function()
+
+cb = (error, result) ->
+    # this will emit an "callback exception" event in the queue
+    undefined_function()
+
+queue = new AsyncWorkQueue worker
+queue.on "error", (task, error) -> console.log "something weird happened while processing the task ..."
+queue.on "callback exception", (task, error) -> console.log "something weird happened during the task callback ..."
+```
