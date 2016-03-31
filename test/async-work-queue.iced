@@ -95,6 +95,14 @@ describe "AsyncWorkQueue", () ->
         queue.push i, cb for i in [1 .. 1000]
 
 
+    it "should accept null callbacks", (done) ->
+        worker = (task, callback) -> callback null, task
+
+        queue = new AsyncWorkQueue worker
+        queue.push i for i in [1 .. 1000]
+        queue.push 1001, done
+
+
     it "should work with concurrency higher than 1", (done) ->
         ok = -> done()
         koCalled = false
